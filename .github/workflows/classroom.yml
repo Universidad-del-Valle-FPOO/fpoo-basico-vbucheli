@@ -1,0 +1,32 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Testear FPOO Cruz roja
+      id: testear-fpoo-cruz-roja
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: Testear FPOO Cruz roja
+        setup-command: ''
+        command: "./main"
+        input: ''
+        expected-output: ''
+        comparison-method: exact
+        timeout: 10
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TESTEAR-FPOO-CRUZ-ROJA_RESULTS: "${{steps.testear-fpoo-cruz-roja.outputs.result}}"
+      with:
+        runners: testear-fpoo-cruz-roja
